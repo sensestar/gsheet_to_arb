@@ -25,18 +25,16 @@ class GSheetToArb {
     final document = await importer.import(documentId);
 
     // Parse TranslationsDocument to ArbBundle
-    final sheetParser =
-        TranslationParser(addContextPrefix: config.addContextPrefix);
+    final sheetParser = TranslationParser(addContextPrefix: config.addContextPrefix);
     final arbBundle = await sheetParser.parseDocument(document);
 
     // Save ArbBundle
-    _arbSerializer.saveArbBundle(arbBundle, config.outputDirectoryPath);
+    _arbSerializer.saveArbBundle(arbBundle, config.outputDirectoryPath, config.arbFilePrefix);
 
     // Generate Code from ArbBundle
     if (config.generateCode) {
       final generator = ArbToDartGenerator();
-      generator.generateDartClasses(
-          arbBundle, config.outputDirectoryPath, config.localizationFileName);
+      generator.generateDartClasses(arbBundle, config.outputDirectoryPath, config.localizationFileName);
     }
 
     Log.i('Succeeded after ${Log.stopTimeTracking()}');

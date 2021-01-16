@@ -22,12 +22,11 @@ class ArbSerializer {
     return arbContent;
   }
 
-  void saveArbBundle(ArbBundle bundle, String directory) {
+  void saveArbBundle(ArbBundle bundle, String directory, String fileNamePrefix) {
     var targetDir = Directory(directory);
     targetDir.createSync(recursive: true);
 
-    bundle.documents
-        .forEach((document) => _saveArbDocument(document, targetDir));
+    bundle.documents.forEach((document) => _saveArbDocument(document, targetDir, fileNamePrefix));
   }
 
   ArbDocument loadArbDocument(String filePath) {
@@ -36,8 +35,8 @@ class ArbSerializer {
     return deserialize(content);
   }
 
-  void _saveArbDocument(ArbDocument document, Directory directory) {
-    var filePath = '${directory.path}/intl_${document.locale}.arb';
+  void _saveArbDocument(ArbDocument document, Directory directory, String fileNamePrefix) {
+    var filePath = '${directory.path}/${fileNamePrefix}_${document.locale}.arb';
     var file = File(filePath);
     file.createSync();
     var arbContent = serialize(document);
