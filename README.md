@@ -65,6 +65,7 @@
         localization_file_name: 'l10n' # Genrated intl dart file name e.g. L10n.dart
         output_directory: 'lib/l10n' # where all the dart and arb data are stored
         add_context_prefix: false # should add category prefix to the keys e.g. common_app_title
+        keep_keys_original_case: false # set true to keep the original case for keys. e.g. camelCase is not mandatory.
         gsheet: 
             auth_file: './gsheet_to_arb.yaml' # file with the gsheet authentication configuration
             category_prefix: "# " 
