@@ -16,8 +16,9 @@ import '_plurals_parser.dart';
 
 class TranslationParser {
   final bool addContextPrefix;
+  final bool keepKeysOriginalCase;
 
-  TranslationParser({this.addContextPrefix});
+  TranslationParser({this.addContextPrefix, this.keepKeysOriginalCase});
 
   Future<ArbBundle> parseDocument(TranslationsDocument document) async {
     final builders = <ArbDocumentBuilder>[];
@@ -25,7 +26,7 @@ class TranslationParser {
 
     for (var langauge in document.languages) {
       final builder = ArbDocumentBuilder(langauge, document.lastModified);
-      final parser = PluralsParser(addContextPrefix);
+      final parser = PluralsParser(addContextPrefix, keepKeysOriginalCase);
       builders.add(builder);
       parsers.add(parser);
     }
@@ -36,16 +37,16 @@ class TranslationParser {
       for (var index in iterables.range(0, document.languages.length)) {
         var itemValue;
         //incase value does not exist
-        if(index < item.values.length) {
+        if (index < item.values.length) {
           itemValue = item.values[index];
         } else {
           itemValue = '';
         }
 
-        if(itemValue == '') {
-          Log.i('WARNING: empty string in lang: '+ document.languages[index] + ', key: '+ item.key);
+        if (itemValue == '') {
+          Log.i('WARNING: empty string in lang: ' + document.languages[index] + ', key: ' + item.key);
         }
-        
+
         final itemPlaceholders = _findPlaceholders(itemValue);
 
         final builder = builders[index];
@@ -53,9 +54,7 @@ class TranslationParser {
 
         // plural consume
         final status = parser.consume(ArbResource(item.key, itemValue,
-            placeholders: itemPlaceholders,
-            context: item.category,
-            description: item.description));
+            placeholders: itemPlaceholders, context: item.category, description: item.description));
 
         if (status is Consumed) {
           continue;
@@ -70,15 +69,17 @@ class TranslationParser {
           }
         }
 
-        final key = addContextPrefix && item.category.isNotEmpty
-            ? ReCase(item.category + '_' + item.key).camelCase
-            : ReCase(item.key).camelCase;
+        final key = keepKeysOriginalCase
+            ? addContextPrefix && item.category.isNotEmpty
+                ? item.category + '_' + item.key
+                : item.key
+            : addContextPrefix && item.category.isNotEmpty
+                ? ReCase(item.category + '_' + item.key).camelCase
+                : ReCase(item.key).camelCase;
 
         // add resource
         builder.add(ArbResource(key, itemValue,
-            context: item.category,
-            description: item.description,
-            placeholders: itemPlaceholders));
+            context: item.category, description: item.description, placeholders: itemPlaceholders));
       }
     }
 
@@ -114,8 +115,7 @@ class TranslationParser {
       if (placeholders.containsKey(placeholderName)) {
         throw Exception('Placeholder $placeholderName already declared');
       }
-      placeholders[placeholderName] =
-          (ArbResourcePlaceholder(name: placeholderName, type: 'text'));
+      placeholders[placeholderName] = (ArbResourcePlaceholder(name: placeholderName, type: 'text'));
     });
     return placeholders.values.toList();
   }

@@ -30,6 +30,7 @@ GsheetToArbConfig _$GsheetToArbConfigFromJson(Map<String, dynamic> json) {
     localizationFileName: json['localization_file_name'] as String,
     generateCode: json['generate_code'] as bool,
     addContextPrefix: json['add_context_prefix'] as bool,
+    keepKeysOriginalCase: json['keep_keys_original_case'] as bool,
   );
 }
 
@@ -40,6 +41,7 @@ Map<String, dynamic> _$GsheetToArbConfigToJson(GsheetToArbConfig instance) =>
       'localization_file_name': instance.localizationFileName,
       'generate_code': instance.generateCode,
       'add_context_prefix': instance.addContextPrefix,
+      'keep_keys_original_case': instance.keepKeysOriginalCase,
       'gsheet': instance.gsheet,
     };
 

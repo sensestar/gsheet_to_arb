@@ -25,7 +25,8 @@ class GSheetToArb {
     final document = await importer.import(documentId);
 
     // Parse TranslationsDocument to ArbBundle
-    final sheetParser = TranslationParser(addContextPrefix: config.addContextPrefix);
+    final sheetParser =
+        TranslationParser(addContextPrefix: config.addContextPrefix, keepKeysOriginalCase: config.keepKeysOriginalCase);
     final arbBundle = await sheetParser.parseDocument(document);
 
     // Save ArbBundle

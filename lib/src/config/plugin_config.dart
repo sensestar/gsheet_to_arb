@@ -18,8 +18,7 @@ class PluginConfigRoot {
 
   PluginConfigRoot(this.content);
 
-  factory PluginConfigRoot.fromJson(Map<String, dynamic> json) =>
-      _$PluginConfigRootFromJson(json);
+  factory PluginConfigRoot.fromJson(Map<String, dynamic> json) => _$PluginConfigRootFromJson(json);
 
   Map<String, dynamic> toJson() => _$PluginConfigRootToJson(this);
 }
@@ -44,6 +43,9 @@ class GsheetToArbConfig {
   @JsonKey(name: 'add_context_prefix')
   bool addContextPrefix;
 
+  @JsonKey(name: 'keep_keys_original_case')
+  bool keepKeysOriginalCase;
+
   @JsonKey(name: 'gsheet')
   GoogleSheetConfig gsheet;
 
@@ -53,10 +55,10 @@ class GsheetToArbConfig {
       this.gsheet,
       this.localizationFileName,
       this.generateCode,
-      this.addContextPrefix});
+      this.addContextPrefix,
+      this.keepKeysOriginalCase});
 
-  factory GsheetToArbConfig.fromJson(Map<String, dynamic> json) =>
-      _$GsheetToArbConfigFromJson(json);
+  factory GsheetToArbConfig.fromJson(Map<String, dynamic> json) => _$GsheetToArbConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$GsheetToArbConfigToJson(this);
 }
@@ -90,12 +92,9 @@ class GoogleSheetConfig {
   GoogleSheetConfig(
       {this.authFile, this.documentId, this.sheetId, this.categoryPrefix, this.sheetColumns, this.sheetRows});
 
-  factory GoogleSheetConfig.fromJson(Map<String, dynamic> json) =>
-      _$GoogleSheetConfigFromJson(json);
+  factory GoogleSheetConfig.fromJson(Map<String, dynamic> json) => _$GoogleSheetConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$GoogleSheetConfigToJson(this);
-
-
 }
 
 class DefaultSheetColumns {
@@ -122,14 +121,13 @@ class SheetColumns {
   });
 
   static SheetColumns generateFromJson(json) {
-    if(json == null) {
+    if (json == null) {
       return SheetColumns();
     }
     return SheetColumns.fromJson(Map<String, dynamic>.from(json));
   }
 
   factory SheetColumns.fromJson(Map<String, dynamic> json) {
-    
     return _$SheetColumnsFromJson(json);
   }
 
@@ -155,15 +153,13 @@ class SheetRows {
   });
 
   static SheetRows generateFromJson(json) {
-    if(json == null) {
+    if (json == null) {
       return SheetRows();
     }
     return SheetRows.fromJson(Map<String, dynamic>.from(json));
   }
 
-
-  factory SheetRows.fromJson(Map<String, dynamic> json) =>
-      _$SheetRowsFromJson(json);
+  factory SheetRows.fromJson(Map<String, dynamic> json) => _$SheetRowsFromJson(json);
 
   Map<String, dynamic> toJson() => _$SheetRowsToJson(this);
 }
@@ -181,8 +177,7 @@ class AuthConfig {
 
   AuthConfig({this.oauthClientId, this.serviceAccountKey});
 
-  factory AuthConfig.fromJson(Map<String, dynamic> json) =>
-      _$AuthConfigFromJson(json);
+  factory AuthConfig.fromJson(Map<String, dynamic> json) => _$AuthConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$AuthConfigToJson(this);
 }
@@ -200,8 +195,7 @@ class OAuthClientId {
 
   OAuthClientId({this.clientId, this.clientSecret});
 
-  factory OAuthClientId.fromJson(Map<String, dynamic> json) =>
-      _$OAuthClientIdFromJson(json);
+  factory OAuthClientId.fromJson(Map<String, dynamic> json) => _$OAuthClientIdFromJson(json);
 
   Map<String, dynamic> toJson() => _$OAuthClientIdToJson(this);
 }
@@ -226,8 +220,7 @@ class ServiceAccountKey {
     this.privateKey,
   });
 
-  factory ServiceAccountKey.fromJson(Map<String, dynamic> json) =>
-      _$ServiceAccountKeyFromJson(json);
+  factory ServiceAccountKey.fromJson(Map<String, dynamic> json) => _$ServiceAccountKeyFromJson(json);
 
   Map<String, dynamic> toJson() => _$ServiceAccountKeyToJson(this);
 }

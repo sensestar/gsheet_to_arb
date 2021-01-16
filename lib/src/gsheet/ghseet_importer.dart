@@ -7,7 +7,6 @@ import 'package:googleapis_auth/auth_io.dart';
 
 class GSheetImporter {
   final GoogleSheetConfig config;
-  
 
   GSheetImporter({this.config});
 
@@ -16,14 +15,12 @@ class GSheetImporter {
     var authClient = await _getAuthClient(config.auth);
     Log.startTimeTracking();
     var sheetsApi = SheetsApi(authClient);
-    var spreadsheet =
-        await sheetsApi.spreadsheets.get(documentId, includeGridData: true);
+    var spreadsheet = await sheetsApi.spreadsheets.get(documentId, includeGridData: true);
     final document = await _importFrom(spreadsheet);
     authClient.close();
 
     Log.i('Loaded document ${document.describe()}');
-    Log.i(
-        'Importing ARB from Google sheet completed, took ${Log.stopTimeTracking()}');
+    Log.i('Importing ARB from Google sheet completed, took ${Log.stopTimeTracking()}');
 
     return document;
   }
@@ -33,8 +30,7 @@ class GSheetImporter {
     var authClient;
     if (auth.oauthClientId != null) {
       void clientAuthPrompt(String url) {
-        Log.i(
-            'Please go to the following URL and grant Google Spreadsheet access:\n$url\n');
+        Log.i('Please go to the following URL and grant Google Spreadsheet access:\n$url\n');
       }
 
       final client = auth.oauthClientId;
@@ -47,8 +43,8 @@ class GSheetImporter {
       authClient = await clientViaUserConsent(id, scopes, clientAuthPrompt);
     } else if (auth.serviceAccountKey != null) {
       final service = auth.serviceAccountKey;
-      var credentials = ServiceAccountCredentials(service.clientEmail,
-          ClientId(service.clientId, null), service.privateKey);
+      var credentials =
+          ServiceAccountCredentials(service.clientEmail, ClientId(service.clientId, null), service.privateKey);
       authClient = await clientViaServiceAccount(credentials, scopes);
     }
     return authClient;
@@ -68,11 +64,9 @@ class GSheetImporter {
 
     var currentCategory = '';
 
-    for (var column = firstLanguageColumn;
-        column < headerValues.length;
-        column++) {
+    for (var column = firstLanguageColumn; column < headerValues.length; column++) {
       //Stop parsing on first empty language code
-      if(headerValues[column].formattedValue == null) {
+      if (headerValues[column].formattedValue == null) {
         break;
       }
       final language = headerValues[column].formattedValue;
@@ -85,14 +79,14 @@ class GSheetImporter {
       var languages = row.values;
 
       //Skip empty rows
-      if(languages == null) {
+      if (languages == null) {
         continue;
       }
 
       var key = languages[config.sheetColumns.key].formattedValue;
 
       //Skip rows with missing key value
-      if(key == null) {
+      if (key == null) {
         continue;
       }
 
@@ -101,19 +95,12 @@ class GSheetImporter {
         continue;
       }
 
-      final description =
-          languages[config.sheetColumns.description].formattedValue ?? '';
+      final description = languages[config.sheetColumns.description].formattedValue ?? '';
 
-      final values = row.values
-          .sublist(firstLanguageColumn, row.values.length)
-          .map((data) => data.formattedValue ?? '')
-          .toList();
+      final values =
+          row.values.sublist(firstLanguageColumn, row.values.length).map((data) => data.formattedValue ?? '').toList();
 
-      final item = TranslationRow(
-          key: key,
-          category: currentCategory,
-          description: description,
-          values: values);
+      final item = TranslationRow(key: key, category: currentCategory, description: description, values: values);
 
       items.add(item);
     }

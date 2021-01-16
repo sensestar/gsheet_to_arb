@@ -21,6 +21,7 @@ class Completed extends PluralsStatus {
 
 class PluralsParser {
   final bool addContextPrefix;
+  final bool keepKeysOriginalCase;
 
   final _pluralSeparator = '=';
 
@@ -38,7 +39,7 @@ class PluralsParser {
   final _placeholders = <String, ArbResourcePlaceholder>{};
   final _values = <PluralCase, String>{};
 
-  PluralsParser(this.addContextPrefix);
+  PluralsParser(this.addContextPrefix, this.keepKeysOriginalCase);
 
   PluralsStatus consume(ArbResource resource) {
     final pluralCase = _getCase(resource.key);
@@ -71,8 +72,8 @@ class PluralsParser {
       // first plural
       _key = caseKey;
       _resource = resource;
-      _placeholders[_countPlaceholder] = ArbResourcePlaceholder(
-          name: _countPlaceholder, description: 'plural count', type: 'num');
+      _placeholders[_countPlaceholder] =
+          ArbResourcePlaceholder(name: _countPlaceholder, description: 'plural count', type: 'num');
       addPlaceholders(resource.placeholders);
       _values[pluralCase] = resource.value;
       return Consumed();
@@ -88,8 +89,8 @@ class PluralsParser {
       _key = caseKey;
       _resource = resource;
       _placeholders.clear();
-      _placeholders[_countPlaceholder] = ArbResourcePlaceholder(
-          name: _countPlaceholder, description: 'plural count', type: 'num');
+      _placeholders[_countPlaceholder] =
+          ArbResourcePlaceholder(name: _countPlaceholder, description: 'plural count', type: 'num');
       addPlaceholders(resource.placeholders);
       _values.clear();
       _values[pluralCase] = resource.value;
@@ -121,9 +122,11 @@ class PluralsParser {
   }
 
   Completed _getCompleted({bool consumed = false}) {
-    final formattedKey = addContextPrefix && _resource.context.isNotEmpty
-        ? ReCase(_resource.context + '_' + _key).camelCase
-        : ReCase(_key).camelCase;
+    final formattedKey = keepKeysOriginalCase
+        ? _key
+        : (addContextPrefix && _resource.context.isNotEmpty
+            ? ReCase(_resource.context + '_' + _key).camelCase
+            : ReCase(_key).camelCase);
 
     return Completed(
         ArbResource(formattedKey, PluralsFormatter.format(Map.from(_values)),

@@ -31,6 +31,7 @@ class PluginConfigManager {
     if (config != null) {
       config.generateCode = config.generateCode ?? true;
       config.addContextPrefix = config.addContextPrefix ?? false;
+      config.keepKeysOriginalCase = config.keepKeysOriginalCase ?? false;
     }
 
     return config;
@@ -42,20 +43,21 @@ class PluginConfigManager {
       Log.i('Config already exists, please check your $configFileName');
     } else {
       final config = GsheetToArbConfig(
-          addContextPrefix: false,
-          generateCode: true,
-          outputDirectoryPath: 'lib/l10n',
-          arbFilePrefix: 'intl',
-          localizationFileName: 'l10n',
-          gsheet: GoogleSheetConfig(
-              categoryPrefix: '# ',
-              sheetId: '0',
-              documentId: '<ADD_DOCUMENT_ID_HERE>',
-              authFile: './' + authFileName,
-              sheetColumns: SheetColumns(),
-              sheetRows: SheetRows(),
-          ),
-        );
+        addContextPrefix: false,
+        keepKeysOriginalCase: false,
+        generateCode: true,
+        outputDirectoryPath: 'lib/l10n',
+        arbFilePrefix: 'intl',
+        localizationFileName: 'l10n',
+        gsheet: GoogleSheetConfig(
+          categoryPrefix: '# ',
+          sheetId: '0',
+          documentId: '<ADD_DOCUMENT_ID_HERE>',
+          authFile: './' + authFileName,
+          sheetColumns: SheetColumns(),
+          sheetRows: SheetRows(),
+        ),
+      );
 
       final root = PluginConfigRoot(config).toJson();
       final yamlString = '\n' + YamlUtils.toYamlString(root);
@@ -81,8 +83,7 @@ class PluginConfigManager {
       FileUtils.storeContent(authFileName, authYaml);
       Log.i('Auth config has been added to the $authFileName');
       Log.i('More info:');
-      Log.i(
-          'https://github.com/gocal/gsheet_to_arb/blob/develop/doc/Authentication.md');
+      Log.i('https://github.com/gocal/gsheet_to_arb/blob/develop/doc/Authentication.md');
     }
     _checkAuthIgonre(authFileName);
   }
@@ -92,8 +93,7 @@ class PluginConfigManager {
       final content = FileUtils.getContent(_gitignore);
 
       if (!content.contains(fileName)) {
-        Log.i(
-            'It looks like your $_gitignore does not contain confidential gsheet config $fileName');
+        Log.i('It looks like your $_gitignore does not contain confidential gsheet config $fileName');
         FileUtils.append(_gitignore, fileName);
         Log.i('$fileName has been added to the $_gitignore');
       }
